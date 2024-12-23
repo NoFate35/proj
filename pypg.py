@@ -64,3 +64,4 @@ add_comment(conn, comment_1)
 add_comment(conn, comment_2)
 
 SELECT p.id, p.title, p.content, p.author_id, p.created_at, c.author_id, c.content, c.created_at FROM posts p LEFT JOIN comments c ON p.id = c.post_id;
+
