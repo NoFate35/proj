@@ -4,6 +4,7 @@ from psycopg2.extras import execute_batch, execute_values, NamedTupleCursor, Rea
 try:
     # пытаемся подключиться к базе данных
     conn = psycopg2.connect(dbname='hexlet', user='ivan',  host='/var/run/postgresql')
+    #conn = psycopg2.connect(dbname='ivan', user='u0_a440',  host='/data/data/com.termux/files/usr/tmp')
 except:
     # в случае сбоя подключения будет выведено сообщение в STDOUT
     print('Can`t establish connection to database')
@@ -44,7 +45,7 @@ def create_post(conn, post):
                   sql1 = """SELECT id FROM posts WHERE title =  %(title)s AND content = %(content)s AND author_id = %(author_id)s"""
                   cursor.execute(sql1, post)
                   rez = cursor.fetchone()
-                  return rez[0]
+     return rez[0]
             
 post_id = create_post(conn, post)
 create_post(conn, post1)
@@ -53,15 +54,36 @@ comment_1 = {'post_id': post_id, 'author_id': 42, 'content': 'wow such post'}
 comment_2 = {'post_id': post_id, 'author_id': 24, 'content': 'totally disagree btw i use arch'}
 
 def add_comment(conn, comment):
-     print('comment', comment)
      sql = """INSERT INTO comments (post_id, author_id, content)
                 VALUES (%(post_id)s, %(author_id)s, %(content)s)"""
      with conn:
           with conn.cursor() as cursor:
                cursor.execute(sql, comment)
-               print('done')
+
 add_comment(conn, comment_1)
 add_comment(conn, comment_2)
 
-SELECT p.id, p.title, p.content, p.author_id, p.created_at, c.author_id, c.content, c.created_at FROM posts p LEFT JOIN comments c ON p.id = c.post_id;
+#SELECT p.id, p.title, p.content, p.author_id, p.created_at, c.author_id, c.content, c.created_at FROM posts p LEFT JOIN comments c ON p.id = c.post_id;
 
+def get_latest_posts(conn, number):
+     sql = """SELECT id, title, content, author_id, created_at FROM posts ORDER BY created_at DESC LIMIT %(number)s;"""
+     sql1 = """SELECT post_id AS id, author_id, content, created_at FROM comments WHERE post_id = %(post_id)s"""
+     with conn:
+          with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+               cursor.execute(sql, {'number': number})
+               posts = cursor.fetchall()
+     conn.commit()
+     conn.close()
+     with conn:
+          with conn.cursor(cursor_factory=RealDictCursor) as cursor:
+               for post in posts:
+                    post_id = post['id']
+                    cursor.execute(sql1, {'post_id': post_id})
+                    comments = cursor.fetchall()
+                    if comments:
+                         post['comments'] = comments
+     return posts
+
+
+
+get_latest_posts(conn, 3)
