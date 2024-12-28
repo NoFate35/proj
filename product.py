@@ -1,9 +1,9 @@
-import psycopg2
 from dataclasses import dataclass
-from psycopg2.extras import execute_batch, execute_values, NamedTupleCursor, RealDictCursor, LoggingCursor, DictCursor
+from typing import Optional
+
 
 class Product:
     name: str
     title: str
-    price: numeric
+    price: int
     id: Optional[int] = None
