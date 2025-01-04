@@ -9,7 +9,11 @@ except:
     # в случае сбоя подключения будет выведено сообщение в STDOUT
     print('Can`t establish connection to database')"""
     
-class Catalog (self, conn):
+class Catalog ():
     def __init__(self, conn):
         self.conn = conn
     
+    def get_product(self, name):
+        result = ProductDAO.find_product(self.conn, name)
+        print('result', result)
+        return dict(result)
