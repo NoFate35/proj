@@ -7,3 +7,7 @@ class Product:
     description: str
     price: int
     id: Optional[int] = None
+'''
+    def __iter__(self):
+        print('self.dict', self.__dict__)
+        return self.__dict__'''

@@ -16,4 +16,6 @@ class Catalog ():
     def get_product(self, name):
         result = ProductDAO.find_product(self.conn, name)
         print('result', result)
-        return dict(result)
+        if result:
+            return result.__dict__
+        raise KeyError('Product {name} not found'.format(name))
