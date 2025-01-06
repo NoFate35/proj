@@ -9,13 +9,25 @@ except:
     # в случае сбоя подключения будет выведено сообщение в STDOUT
     print('Can`t establish connection to database')"""
     
-class Catalog ():
+class Catalog:
     def __init__(self, conn):
         self.conn = conn
     
     def get_product(self, name):
-        result = ProductDAO.find_product(self.conn, name)
+        dao = ProductDAO(self.conn)
+        product = dao.find_product(name)
         print('result', result)
-        if result:
-            return result.__dict__
-        raise KeyError('Product {name} not found'.format(name))
+        if product is None:
+            raise KeyError('Product {name} not found'.format(name))
+                
+        id = product.get_id()
+        name = product.get_name()
+        description = product.get_description()
+        price = product.get_price()
+        return {
+            'id': id,
+            'name': name,
+            'description': description,
+            'price': price
+        }
+        
