@@ -16,7 +16,7 @@ class Catalog:
     def get_product(self, name):
         dao = ProductDAO(self.conn)
         product = dao.find_product(name)
-        print('result', result)
+        #print('result', result)
         if product is None:
             raise KeyError('Product {name} not found'.format(name))
                 

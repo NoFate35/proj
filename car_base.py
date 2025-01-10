@@ -5,4 +5,8 @@ from carDAO import CarDAO
 class CarBase:
     def __init__(self, conn):
         self.conn = conn
+    def get_info(self, plate):
+        car = CarDAO(self.conn)
+        result = car.car_data(plate)
+        
 # END
