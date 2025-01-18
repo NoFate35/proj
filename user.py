@@ -12,3 +12,12 @@ class User:
 
     def add_car(self, car: 'Car'):
         self.cars.append(car)
+    
+    def get_owner(self):
+        return self.first_name + ' ' + self.last_name
+    
+    def get_address(self):
+        return self.address
+    
+    def set_id(self, id):
+        self.id = id

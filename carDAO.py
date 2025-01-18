@@ -11,19 +11,31 @@ class CarDAO:
 # BEGIN (write your solution here)
     def car_data(self, plate):
         with self.conn.cursor(cursor_factory=NamedTupleCursor) as cur:
-            sql = "SELECT cars.id AS cid, users.id AS uid, cars.manufacturer, cars.model, cars.plate, cars.color, users.first_name, users.last_name, users.address FROM cars INNER JOIN users ON cars.user_id = users.id WHERE cars.plate = %s;"
-            cur.execute(sql, (plate,))
-            result = cur.fetchone()
+            car_sql = "SELECT * FROM cars WHERE plate = %s;"
+            cur.execute(car_sql, (plate,))
+            car_result = cur.fetchone()
             #print('result', result.manufacturer)
-            if result:
-                car = Car(
-                result.manufacturer,
-                result.model,
-                result.plate,
-                result.color
+            if car_result is None:
+                return None
+            car = Car(
+                manufacturer = car_result.manufacturer,
+                model = car_result.model,
+                plate = car_result.plate,
+                color = car_result.color,
+                id = car_result.id
                 )
-                car.set_id(result.cid)
                 
-                user = User()
+            owner_id = car_result.user_id
+            user_sql = "SELECT * FROM users WHERE id = %s;"
+            cur.execute(user_sql, (owner_id,))
+            user_result = cur.fetchone()
+            user = User(
+                first_name = user_result.first_name,
+                last_name = user_result.last_name,
+                address = user_result.address,
+                id = user_result.id
+                )
+            car.owner = user
+            return car
             
 # END

@@ -24,10 +24,10 @@ class Car:
         return self.color
         
     def set_id(self, id):
-        return self.id = id
+        self.id = id
     
     def set_owner(self, owner):
-        return self.owner = owner
+        self.owner = owner
     
     
     
